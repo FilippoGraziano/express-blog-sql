@@ -6,5 +6,41 @@ export const getPosts = async (req, res) => {
 
     const [result] = await connection.query(sql);
     res.send(result);
+
+}
+
+export const getSinglePost = async (req, res) => {
+
+    const id = req.params.id;
+    const sql = `SELECT * FROM posts WHERE id = ?`;
+
+    const [result] = await connection.query(sql, id);
+
+    res.send(result);
+}
+
+export const createPost = async (req, res) => {
+
+    const sql = `INSERT INTO posts (title, content, image) VALUES ( ?, ?, ? )`;
+    const { title, content, image } = req.body;
+
+    const [result] = await connection.query(sql, [ title, content, image]);
+
+    res.json({
+        id: result.insertId,
+        title,
+        content,
+        image
+    });
     
+}
+
+export const updatePost = async (req, res) => {
+
+
+}
+
+export const deletePost = async (req, res) => {
+
+
 }
