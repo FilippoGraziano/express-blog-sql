@@ -1,17 +1,14 @@
 import express from 'express';
-import { connection } from './data/db.js';
+import { routerPosts } from './resources/postsRouters.js';
 
 const app = express();
 const port = 3000;
 
-app.get('/posts', async (req, res) => {
+app.use(`/posts`, routerPosts);
 
-    const sql = `SELECT * FROM posts`;
-
-    const  [result] = await connection.query(sql);
-    res.send(result);
-
-});
+app.get(`/`, (req, res) => {
+    res.send(`Home of the blog`)
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
