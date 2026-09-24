@@ -18,13 +18,25 @@ export const getSinglePost = async (req, res) => {
     const id = Number(req.params.id);
     if (isNaN(id)) res.json({ error: `id error`, message: `The id should be a number` });
 
-    const sql = `SELECT * FROM posts WHERE id = ?`;
+    const sqlPost = `SELECT * FROM posts WHERE id = ?`;
+    const sqlTag = `
+        SELECT 
+            t.label
+        FROM tags t
+        JOIN post_tag pt
+        ON pt.tag_id = t.id
+        WHERE pt.post_id = ?
+    `;
 
-    const [result] = await connection.query(sql, id);
+    const [[resultPost]] = await connection.query(sqlPost, id);
+    const [resultTag] = await connection.query(sqlTag, id);
 
-    if (result.length === 0) notFoundError(req, res);
+    if (resultPost.length === 0) notFoundError(req, res);
 
-    res.send(result);
+    resultPost.labels = resultTag.map(tag => tag.label);
+    console.log(resultPost)
+
+    res.send(resultPost);
 }
 
 export const createPost = async (req, res) => {
