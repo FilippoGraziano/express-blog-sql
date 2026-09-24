@@ -24,7 +24,7 @@ export const createPost = async (req, res) => {
     const sql = `INSERT INTO posts (title, content, image) VALUES ( ?, ?, ? )`;
     const { title, content, image } = req.body;
 
-    const [result] = await connection.query(sql, [ title, content, image]);
+    const [result] = await connection.query(sql, [title, content, image]);
 
     res.json({
         id: result.insertId,
@@ -32,15 +32,33 @@ export const createPost = async (req, res) => {
         content,
         image
     });
-    
+
 }
 
 export const updatePost = async (req, res) => {
 
+    const id = req.params.id;
+    const { title, content, image } = req.body;
+    const sql = `
+        UPDATE posts 
+        SET title = ?,
+            content = ?,
+            image = ?
+        WHERE id = ?
+    `;
+
+    connection.query(sql, [ title, content, image, id ]);
+
+    res.sendStatus(204);
 
 }
 
 export const deletePost = async (req, res) => {
 
+    const id = req.params.id;
+    const sql = `DELETE FROM posts WHERE id = ?`;
 
+    connection.query(sql, id);
+
+    res.sendStatus(204);
 }
